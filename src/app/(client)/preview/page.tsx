@@ -1,5 +1,5 @@
 import React from 'react';
-import { MarkdownPreview } from '@/components/business/MarkdownPreview';
+import { MarkdownPreview } from '@/components/features/MarkdownPreview';
 import { TEST_MARKDOWN } from '@/lib/test-markdown';
 import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
 import Link from 'next/link';

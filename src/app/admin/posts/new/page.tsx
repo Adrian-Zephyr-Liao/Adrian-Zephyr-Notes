@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { TiptapEditor } from "@/components/business/TiptapEditor"
+import { TiptapEditor } from "@/components/features/TiptapEditor"
 import { TEST_MARKDOWN } from "@/lib/test-markdown"
 import { cn } from "@/lib/utils"
 
