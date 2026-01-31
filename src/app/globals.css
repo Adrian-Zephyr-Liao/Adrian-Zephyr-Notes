@@ -175,6 +175,13 @@
   }
 }
 
+/* Tiptap editor: focus ring for a11y, smooth transitions (ui-ux-pro-max) */
+.tiptap:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  transition: outline-color 0.2s ease;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

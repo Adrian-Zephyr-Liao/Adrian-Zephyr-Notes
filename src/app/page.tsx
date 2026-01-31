@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "Adrian Zephyr Notes – get started and explore.",
+};
 
 const TEMPLATES_URL =
   "https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app";
@@ -79,7 +85,7 @@ export default function Home() {
               className="w-full rounded-full md:w-[158px]"
             >
               <a href={href} {...EXTERNAL_LINK_PROPS}>
-                {icon === "vercel" && (
+                {icon === "vercel" ? (
                   <Image
                     className="dark:invert"
                     src="/vercel.svg"
@@ -89,7 +95,7 @@ export default function Home() {
                     aria-hidden
                     sizes="16px"
                   />
-                )}
+                ) : null}
                 {label}
               </a>
             </Button>

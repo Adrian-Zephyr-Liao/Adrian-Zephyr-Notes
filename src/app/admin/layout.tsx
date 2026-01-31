@@ -30,18 +30,16 @@ const NAV_ITEMS = [
 
 const SETTINGS_ITEM = { href: "/admin/settings", label: "Settings", icon: Settings } as const
 
-interface AdminLayoutProps {
-  children: React.ReactNode
-}
-
-export default function AdminLayout({ children }: AdminLayoutProps) {
+export default function AdminLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const pathname = usePathname()
   const isNewPost = pathname === "/admin/posts/new"
 
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full overflow-hidden bg-background">
-        {!isNewPost && (
+        {!isNewPost ? (
         <Sidebar
           collapsible="none"
           className="hidden w-64 shrink-0 md:block m-4 h-[calc(100vh-2rem)] flex-col neumorphic rounded-xl"
@@ -89,10 +87,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </SidebarContent>
           </ScrollArea>
         </Sidebar>
-        )}
+        ) : null}
 
         <SidebarInset className={isNewPost ? "flex-1" : ""}>
-          <main id="main-content" className={cn("flex-1", isNewPost ? "overflow-hidden" : "overflow-y-auto")}>
+          <main
+            id="main-content"
+            className={cn("flex-1", isNewPost ? "overflow-hidden" : "overflow-y-auto")}
+          >
             {isNewPost ? children : <div className="container mx-auto max-w-7xl p-6 md:p-8">{children}</div>}
           </main>
         </SidebarInset>

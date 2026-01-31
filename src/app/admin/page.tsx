@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Blog admin dashboard – overview of content and statistics",
+};
 
 const CARD_CLASS =
   "neumorphic transition-[transform,opacity] duration-200 cursor-pointer hover:scale-[1.02]";
@@ -6,9 +12,14 @@ const TITLE_CLASS = "text-sm font-medium text-muted-foreground";
 const VALUE_CLASS = "text-3xl font-bold text-foreground font-['Fira_Code']";
 const DESC_CLASS = "mt-1 text-xs";
 
-type StatItem = { title: string; value: string | number; description: string }
+type StatItem = {
+  id: string;
+  title: string;
+  value: string | number;
+  description: string;
+};
 
-function StatsCard({ title, value, description }: StatItem) {
+function StatsCard({ title, value, description }: Omit<StatItem, "id">) {
   return (
     <Card className={CARD_CLASS}>
       <CardHeader className="pb-3">
@@ -23,11 +34,11 @@ function StatsCard({ title, value, description }: StatItem) {
 }
 
 const STATS: StatItem[] = [
-  { title: "Total Posts", value: "0", description: "Published articles" },
-  { title: "Drafts", value: "0", description: "In progress" },
-  { title: "Total Views", value: "0", description: "All time" },
-  { title: "This Month", value: "0", description: "Page views" },
-]
+  { id: "total-posts", title: "Total Posts", value: "0", description: "Published articles" },
+  { id: "drafts", title: "Drafts", value: "0", description: "In progress" },
+  { id: "total-views", title: "Total Views", value: "0", description: "All time" },
+  { id: "this-month", title: "This Month", value: "0", description: "Page views" },
+];
 
 export default function AdminDashboard() {
   return (
@@ -36,15 +47,15 @@ export default function AdminDashboard() {
         <h1 className="text-3xl font-bold tracking-tight text-foreground font-['Fira_Code']">
           Dashboard
         </h1>
-        <p className="text-muted-foreground mt-1.5 text-sm">
+        <p className="mt-1.5 text-sm text-muted-foreground">
           Overview of your blog content and statistics
         </p>
       </header>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {STATS.map(({ title, value, description }) => (
+        {STATS.map(({ id, title, value, description }) => (
           <StatsCard
-            key={title}
+            key={id}
             title={title}
             value={value}
             description={description}
