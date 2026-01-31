@@ -1,18 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 const CARD_CLASS =
-  "neumorphic transition-all duration-200 cursor-pointer hover:scale-[1.02]";
+  "neumorphic transition-[transform,opacity] duration-200 cursor-pointer hover:scale-[1.02]";
 const TITLE_CLASS = "text-sm font-medium text-muted-foreground";
 const VALUE_CLASS = "text-3xl font-bold text-foreground font-['Fira_Code']";
 const DESC_CLASS = "mt-1 text-xs";
 
-type StatsCardProps = {
-  title: string;
-  value: string | number;
-  description: string;
-};
+type StatItem = { title: string; value: string | number; description: string }
 
-function StatsCard({ title, value, description }: StatsCardProps) {
+function StatsCard({ title, value, description }: StatItem) {
   return (
     <Card className={CARD_CLASS}>
       <CardHeader className="pb-3">
@@ -26,12 +22,12 @@ function StatsCard({ title, value, description }: StatsCardProps) {
   );
 }
 
-const STATS: Array<{ title: string; value: string | number; description: string }> = [
+const STATS: StatItem[] = [
   { title: "Total Posts", value: "0", description: "Published articles" },
   { title: "Drafts", value: "0", description: "In progress" },
   { title: "Total Views", value: "0", description: "All time" },
   { title: "This Month", value: "0", description: "Page views" },
-];
+]
 
 export default function AdminDashboard() {
   return (

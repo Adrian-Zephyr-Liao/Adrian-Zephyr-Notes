@@ -43,7 +43,7 @@ export function TiptapEditor({ content, onChange, className }: TiptapEditorProps
       attributes: {
         class: cn(
           // Base Typography - Fira Sans for body
-          "prose prose-lg max-w-none focus:outline-none min-h-[500px] p-8 font-['Fira_Sans']",
+          "prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6 font-['Fira_Sans']",
           // Adaptive Prose
           "prose-slate dark:prose-invert",
 
@@ -115,11 +115,11 @@ export function TiptapEditor({ content, onChange, className }: TiptapEditorProps
 
   return (
     <div className={cn(
-      "flex flex-col h-full bg-card overflow-hidden",
+      "flex flex-col h-full overflow-hidden rounded-xl gap-4",
       className
     )}>
-      {/* Toolbar - Soft UI Evolution */}
-      <div className="flex items-center gap-1 p-2 border-b border-border/50 bg-muted/20 flex-wrap">
+      {/* Toolbar - Neumorphic raised block */}
+      <div className="flex items-center gap-1 px-4 py-2.5 bg-card flex-wrap shrink-0 rounded-xl">
         {toolbarGroups.map((group, i) => (
           <div key={group.id} className="flex items-center gap-0.5">
             {i > 0 && <div className="w-px h-5 bg-border/50 mx-1.5" />}
@@ -154,30 +154,12 @@ export function TiptapEditor({ content, onChange, className }: TiptapEditorProps
       </div>
 
       {/* Editor Content Surface */}
-      <div className="flex-1 relative min-h-0">
-        <div className="absolute inset-0 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 relative min-h-0 bg-card rounded-xl">
           <EditorContent
             editor={editor}
             className="h-full focus:outline-none"
           />
-        </div>
       </div>
-
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: color-mix(in oklch, var(--primary) 20%, transparent);
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: color-mix(in oklch, var(--primary) 30%, transparent);
-        }
-      `}</style>
     </div>
   )
 }
@@ -201,7 +183,7 @@ function ToolbarButton({ onClick, isActive, disabled, icon: Icon, title }: Toolb
         "h-8 w-8 rounded-xl transition-all duration-200 cursor-pointer",
         isActive
           ? "neumorphic-pressed text-primary"
-          : "text-muted-foreground hover:text-foreground neumorphic hover:scale-105 active:neumorphic-pressed",
+          : "text-muted-foreground hover:text-foreground hover:bg-muted/80 neumorphic active:neumorphic-pressed",
         disabled && "opacity-40 cursor-not-allowed"
       )}
       title={title}

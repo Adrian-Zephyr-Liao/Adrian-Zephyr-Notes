@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const TEMPLATES_URL =
   "https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app";
@@ -9,12 +10,31 @@ const DEPLOY_URL =
 const DOCS_URL =
   "https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app";
 
-const linkClass = "font-medium text-zinc-950 dark:text-zinc-50";
+const NAV_LINKS = [
+  {
+    href: DEPLOY_URL,
+    label: "Deploy Now",
+    icon: "vercel" as const,
+    variant: "default" as const,
+  },
+  { href: DOCS_URL, label: "Documentation", variant: "outline" as const },
+] satisfies Array<{
+  href: string;
+  label: string;
+  icon?: "vercel";
+  variant: "default" | "outline";
+}>;
+
+const LINK_CLASS = "font-medium text-primary underline-offset-4 hover:underline";
+const EXTERNAL_LINK_PROPS = {
+  target: "_blank" as const,
+  rel: "noopener noreferrer",
+};
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-between bg-zinc-50 font-sans dark:bg-black sm:items-start">
-      <div className="w-full max-w-3xl flex flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <main id="main-content" className="flex min-h-screen flex-col items-center justify-between bg-background font-sans sm:items-start">
+      <div className="flex w-full max-w-3xl flex-col items-center justify-between bg-background px-16 py-32 sm:items-start">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -22,6 +42,7 @@ export default function Home() {
           width={100}
           height={20}
           priority
+          sizes="100px"
         />
         <section
           className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left"
@@ -29,50 +50,50 @@ export default function Home() {
         >
           <h1
             id="home-heading"
-            className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50"
+            className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-foreground"
           >
             To get started, edit the page.tsx file.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+          <p className="max-w-md text-lg leading-8 text-muted-foreground">
             Looking for a starting point or more instructions? Head over to{" "}
-            <a href={TEMPLATES_URL} className={linkClass} target="_blank" rel="noopener noreferrer">
+            <a href={TEMPLATES_URL} className={LINK_CLASS} {...EXTERNAL_LINK_PROPS}>
               Templates
             </a>{" "}
             or the{" "}
-            <a href={LEARN_URL} className={linkClass} target="_blank" rel="noopener noreferrer">
+            <a href={LEARN_URL} className={LINK_CLASS} {...EXTERNAL_LINK_PROPS}>
               Learning
             </a>{" "}
             center.
           </p>
         </section>
         <nav
-          className="flex flex-col gap-4 text-base font-medium sm:flex-row"
+          className="flex flex-col gap-4 sm:flex-row"
           aria-label="Quick actions"
         >
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href={DEPLOY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt=""
-              width={16}
-              height={16}
-              aria-hidden
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/8 px-5 transition-colors hover:border-transparent hover:bg-black/4 dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href={DOCS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          {NAV_LINKS.map(({ href, label, icon, variant }) => (
+            <Button
+              key={href}
+              asChild
+              variant={variant}
+              size="lg"
+              className="w-full rounded-full md:w-[158px]"
+            >
+              <a href={href} {...EXTERNAL_LINK_PROPS}>
+                {icon === "vercel" && (
+                  <Image
+                    className="dark:invert"
+                    src="/vercel.svg"
+                    alt=""
+                    width={16}
+                    height={16}
+                    aria-hidden
+                    sizes="16px"
+                  />
+                )}
+                {label}
+              </a>
+            </Button>
+          ))}
         </nav>
       </div>
     </main>

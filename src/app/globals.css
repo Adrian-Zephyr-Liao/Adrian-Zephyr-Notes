@@ -51,6 +51,7 @@
 }
 
 :root {
+  color-scheme: light;
   /* Soft UI Evolution + Neumorphism - Harmonious Monochromatic */
   --card: oklch(0.97 0.002 0); /* Soft off-white #F5F5F5 */
   --card-foreground: oklch(0.25 0.01 0);
@@ -88,6 +89,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   /* Dark mode - Soft UI Evolution - Harmonious */
   --background: oklch(0.25 0.01 0);
   --foreground: oklch(0.95 0.002 0);
@@ -133,7 +135,7 @@
     6px 6px 12px oklch(from var(--card) calc(l - 0.04) c h);
     border: none;
   }
-
+  
   .neumorphic-inset {
     background: var(--card);
     border-radius: var(--radius);
@@ -142,7 +144,7 @@
     inset 3px 3px 6px oklch(from var(--card) calc(l - 0.03) c h);
     border: none;
   }
-
+  
   .neumorphic-pressed {
     background: var(--card);
     border-radius: var(--radius);
@@ -150,14 +152,6 @@
     inset 3px 3px 6px oklch(from var(--card) calc(l - 0.03) c h),
     inset -3px -3px 6px oklch(from var(--card) calc(l + 0.03) c h);
     border: none;
-  }
-
-  .soft-shadow {
-    box-shadow: 0 2px 4px oklch(from var(--foreground) l c h / 0.08);
-  }
-
-  .soft-shadow-lg {
-    box-shadow: 0 4px 8px oklch(from var(--foreground) l c h / 0.1);
   }
 }
 
@@ -167,13 +161,13 @@
       -6px -6px 12px oklch(from var(--card) calc(l + 0.04) c h),
       6px 6px 12px oklch(from var(--card) calc(l - 0.04) c h);
   }
-
+  
   .neumorphic-inset {
     box-shadow: 
       inset -3px -3px 6px oklch(from var(--card) calc(l + 0.03) c h),
       inset 3px 3px 6px oklch(from var(--card) calc(l - 0.03) c h);
   }
-
+  
   .neumorphic-pressed {
     box-shadow: 
       inset 3px 3px 6px oklch(from var(--card) calc(l - 0.03) c h),
