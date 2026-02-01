@@ -4,6 +4,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, PenTool, Settings } from "lucide-react"
 
+import { AdminFloatingActions } from "@/components/admin-floating-actions"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
@@ -97,6 +99,10 @@ export default function AdminLayout({
             {isNewPost ? children : <div className="container mx-auto max-w-7xl p-6 md:p-8">{children}</div>}
           </main>
         </SidebarInset>
+
+        <AdminFloatingActions>
+          <ThemeToggle />
+        </AdminFloatingActions>
       </div>
     </SidebarProvider>
   )

@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
-
-@plugin "tailwindcss-animate";
+@import "tw-animate-css";
 @plugin "@tailwindcss/typography";
+
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -52,7 +53,7 @@
 
 :root {
   color-scheme: light;
-  /* Soft UI Evolution + Neumorphism - Harmonious Monochromatic */
+  /* Soft UI / z-blue: --primary (links), --foreground, --muted (code/blockquote); editor + preview share Z_BLUE_PROSE_CLASS */
   --card: oklch(0.97 0.002 0); /* Soft off-white #F5F5F5 */
   --card-foreground: oklch(0.25 0.01 0);
   --popover: oklch(0.97 0.002 0);

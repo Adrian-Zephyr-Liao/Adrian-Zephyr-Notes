@@ -2,6 +2,13 @@
 
 import { useCallback, useEffect, useRef, memo } from 'react'
 import { useEditor, EditorContent, ReactNodeViewRenderer, type Editor } from '@tiptap/react'
+import type {
+  TiptapEditorProps,
+  TiptapPreviewProps,
+  TiptapToolbarProps,
+  ToolbarButtonProps,
+  MarkdownStorage,
+} from '@/types/editor'
 import StarterKit from '@tiptap/starter-kit'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import Image from '@tiptap/extension-image'
@@ -11,22 +18,17 @@ import { Markdown } from 'tiptap-markdown'
 import { Bold, Italic, List, ListOrdered, Heading1, Heading2, Heading3, Quote, Code, Undo, Redo, Minus, ImageIcon, Strikethrough } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { CodeBlockThemeProvider } from '@/contexts/CodeBlockThemeContext'
 import { CodeBlockComponent } from './CodeBlockComponent'
 
 const lowlight = createLowlight(common)
 
 /**
- * Tailwind prose classes applied to the editor content area.
- *
- * @remarks
- * Hoisted to module scope so the same string is reused on every render.
- * Includes Fira Sans/Fira Code typography, link/blockquote/code styling,
- * and dark mode support.
+ * Shared prose classes for editor and preview (Juejin z-blue style).
+ * Single source of truth so both render identically.
  * @internal
  */
-const EDITOR_PROSE_CLASS = cn(
-  'prose prose-lg max-w-none focus:outline-none min-h-[400px] p-6 font-[\'Fira_Sans\']',
+export const Z_BLUE_PROSE_CLASS = cn(
+  'prose prose-lg max-w-none focus:outline-none p-6 font-[\'Fira_Sans\']',
   'prose-slate dark:prose-invert',
   'prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-foreground prose-headings:font-[\'Fira_Code\']',
   'prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline',
@@ -37,33 +39,30 @@ const EDITOR_PROSE_CLASS = cn(
   'prose-hr:border-border border-0 border-b'
 )
 
-/**
- * Props for the TiptapEditor component.
- *
- * @example
- * ```tsx
- * <TiptapEditor
- *   content={post.content}
- *   onChange={(markdown) => setPost(prev => ({ ...prev, content: markdown }))}
- *   className="h-full"
- * />
- * ```
- */
-interface TiptapEditorProps {
-  /** Initial or controlled markdown content. */
-  content: string
-  /** Called when content changes; receives current markdown string. */
-  onChange: (content: string) => void
-  /** Optional CSS class for the root wrapper. */
-  className?: string
-}
-
-/**
- * Storage interface exposed by tiptap-markdown extension.
- * @internal
- */
-interface MarkdownStorage {
-  getMarkdown: () => string
+/** Shared extensions for editable and read-only Tiptap (markdown + code highlight). */
+function getTiptapExtensions() {
+  return [
+    StarterKit.configure({
+      codeBlock: false,
+      heading: { levels: [1, 2, 3] },
+      link: { openOnClick: false, HTMLAttributes: { class: 'text-primary underline hover:text-primary/80' } },
+    }),
+    CodeBlockLowlight.extend({
+      addNodeView() {
+        return ReactNodeViewRenderer(CodeBlockComponent) as unknown as import('@tiptap/core').NodeViewRenderer
+      },
+    }).configure({ lowlight }),
+    Typography,
+    Image.configure({
+      allowBase64: false,
+      HTMLAttributes: { class: 'rounded-xl shadow-lg border border-border max-w-full h-auto' },
+    }),
+    Markdown.configure({
+      html: false,
+      transformPastedText: true,
+      transformCopiedText: true,
+    }),
+  ] as import('@tiptap/react').AnyExtension[]
 }
 
 /**
@@ -94,34 +93,12 @@ export function TiptapEditor({ content, onChange, className }: TiptapEditorProps
   const lastEmittedMarkdownRef = useRef<string>(content)
 
   const editor = useEditor({
-    // Extensions may come from different @tiptap/core copies; cast avoids multi-version type conflict (Tiptap Issue #577/#6171)
-    extensions: [
-      StarterKit.configure({
-        codeBlock: false,
-        heading: { levels: [1, 2, 3] },
-        link: { openOnClick: false, HTMLAttributes: { class: 'text-primary underline hover:text-primary/80' } },
-      }),
-      CodeBlockLowlight.extend({
-        addNodeView() {
-          // Cast: CodeBlockLowlight uses root @tiptap/core; ReactNodeViewRenderer uses @tiptap/react's core (multi-version)
-          return ReactNodeViewRenderer(CodeBlockComponent) as unknown as import('@tiptap/core').NodeViewRenderer
-        },
-      }).configure({ lowlight }),
-      Typography,
-      Image.configure({
-        allowBase64: false,
-        HTMLAttributes: { class: 'rounded-xl shadow-lg border border-border max-w-full h-auto' },
-      }),
-      Markdown.configure({
-        html: false,
-        transformPastedText: true,
-        transformCopiedText: true,
-      }),
-    ] as import('@tiptap/react').AnyExtension[],
+    extensions: getTiptapExtensions(),
     editorProps: {
-      attributes: { class: EDITOR_PROSE_CLASS },
+      attributes: { class: Z_BLUE_PROSE_CLASS + ' min-h-[400px]' },
     },
     content,
+    editable: true,
     onUpdate: ({ editor: ed }) => {
       const storage = ed.storage as unknown as Record<string, unknown>
       const markdown = (storage.markdown as MarkdownStorage).getMarkdown()
@@ -148,29 +125,49 @@ export function TiptapEditor({ content, onChange, className }: TiptapEditorProps
   }
 
   return (
-    <CodeBlockThemeProvider>
-      <div className={cn('flex flex-col h-full overflow-hidden rounded-xl gap-4', className)}>
-        <TiptapToolbar editor={editor} onInsertImage={insertImageByUrl} />
-        <div className="flex-1 relative min-h-0 bg-card rounded-xl overflow-y-auto overflow-x-hidden">
-          <EditorContent editor={editor} className="min-h-full focus:outline-none" />
-        </div>
+    <div className={cn('flex flex-col h-full overflow-hidden rounded-xl gap-4', className)}>
+      <TiptapToolbar editor={editor} onInsertImage={insertImageByUrl} />
+      <div className="flex-1 relative min-h-0 bg-card rounded-xl overflow-y-auto overflow-x-hidden">
+        <EditorContent editor={editor} className="min-h-full focus:outline-none" />
       </div>
-    </CodeBlockThemeProvider>
+    </div>
   )
 }
 
 TiptapEditor.displayName = 'TiptapEditor'
 
 /**
- * Props for the toolbar rendered above the editor.
- * @internal
+ * Read-only Tiptap renderer; same extensions and prose as TiptapEditor.
+ * Use for preview so editor and preview render identically.
  */
-interface TiptapToolbarProps {
-  /** Tiptap editor instance for commands and active state. */
-  editor: Editor
-  /** Callback to open insert-image flow (e.g. URL prompt). */
-  onInsertImage: () => void
+export function TiptapPreview({ content, className }: TiptapPreviewProps) {
+  const editor = useEditor({
+    extensions: getTiptapExtensions(),
+    editorProps: {
+      attributes: { class: Z_BLUE_PROSE_CLASS },
+    },
+    content,
+    editable: false,
+    immediatelyRender: false,
+  })
+
+  useEffect(() => {
+    if (!editor) return
+    editor.commands.setContent(content, { emitUpdate: false })
+  }, [editor, content])
+
+  if (!editor) {
+    return null
+  }
+
+  return (
+    <div className={cn('rounded-xl overflow-hidden', className)}>
+      <EditorContent editor={editor} className="min-h-0 focus:outline-none" />
+    </div>
+  )
 }
+
+TiptapPreview.displayName = 'TiptapPreview'
 
 /**
  * Toolbar with formatting buttons and undo/redo.
@@ -248,23 +245,6 @@ function TiptapToolbar({ editor, onInsertImage }: TiptapToolbarProps) {
       </div>
     </div>
   )
-}
-
-/**
- * Props for a single toolbar icon button.
- * @internal
- */
-interface ToolbarButtonProps {
-  /** Click handler (e.g. runs editor command). */
-  onClick: () => void
-  /** Whether the format is active (e.g. bold on selection). */
-  isActive?: boolean
-  /** Disables the button (e.g. no undo available). */
-  disabled?: boolean
-  /** Lucide icon component. */
-  icon: React.ComponentType<{ className?: string }>
-  /** Accessible label and tooltip. */
-  title: string
 }
 
 /**

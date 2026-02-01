@@ -13,15 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import { TiptapEditor } from "@/components/features/TiptapEditor"
 import { TEST_MARKDOWN } from "@/lib/test-markdown"
 import { cn } from "@/lib/utils"
-
-interface PostState {
-  title: string
-  slug: string
-  excerpt: string
-  content: string
-  coverImage: string
-  tags: string
-}
+import type { PostState } from "@/types/post"
 
 const generateSlug = (text: string): string => {
   return text

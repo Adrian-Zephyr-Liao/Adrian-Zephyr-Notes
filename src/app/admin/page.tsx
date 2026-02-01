@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import type { StatItem } from "@/types/admin"
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -11,13 +12,6 @@ const CARD_CLASS =
 const TITLE_CLASS = "text-sm font-medium text-muted-foreground";
 const VALUE_CLASS = "text-3xl font-bold text-foreground font-['Fira_Code']";
 const DESC_CLASS = "mt-1 text-xs";
-
-type StatItem = {
-  id: string;
-  title: string;
-  value: string | number;
-  description: string;
-};
 
 function StatsCard({ title, value, description }: Omit<StatItem, "id">) {
   return (
